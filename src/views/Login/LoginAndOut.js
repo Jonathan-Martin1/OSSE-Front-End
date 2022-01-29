@@ -4,6 +4,7 @@ import RegistrationForm from '../Register/RegistrationForm'
 import Overview from '../Overview/Overview'
 import Container from 'react-bootstrap/Container'
 import axios from 'axios'
+// TODO: Fix the false with a valid username and password where any registered user can login
 
 export default function LoginOut({ loggedIn, setLoggedIn }) {
   const API = process.env.REACT_APP_API_REGISTRATION_LOGIN
@@ -23,18 +24,24 @@ export default function LoginOut({ loggedIn, setLoggedIn }) {
   const handleSubmit = (event) => {
     event.preventDefault()
     if (formData.userName && formData.password !== '') {
+      // Checks input to not be empty
       axios.get(`${API}`).then((response) => {
+        // calls API data assigns to response
         for (let i = 0; i < response.data.data.length; i++) {
+          // loops through data
           let comparisonData = response.data.data[i]
+          // Asigns a shorter varible for next checks
           if (
-            comparisonData.username === formData.userName &&
-            comparisonData.password === formData.password
+            comparisonData.username &&
+            comparisonData.password === formData.userName &&
+            formData.password
           ) {
+            // Validates that username and password match the data called from API
             setLoggedIn(true)
-            history.push('/Overview')
+            history.push('/Overview') // if true, user is sent to game, state is set to true
           } else {
             setLoggedIn(false)
-            history.push('/Register')
+            history.push('/Register') // if false, user is sent to registration
           }
         }
       })
