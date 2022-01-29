@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import uuid from 'react-uuid';
-import axios from 'axios';
+import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import uuid from 'react-uuid'
+import axios from 'axios'
 
 const initialForm = {
   registration_id: uuid(),
@@ -11,40 +11,41 @@ const initialForm = {
   email: '',
   password: '',
   password_match: '',
-};
+}
 
 const RegistrationForm = () => {
-  const [registrationForm, setRegistrationForm] = useState({ ...initialForm });
+  const [registrationForm, setRegistrationForm] = useState({ ...initialForm })
+  const API = process.env.REACT_APP_API_REGISTRATION
 
-  const history = useHistory();
+  const history = useHistory()
 
   // It's only responsibility is handling form input changes
   const handleChange = ({ target }) => {
     // alert(
     //   'Registration is currently closed for Development all info will not be saved!'
     // );
-    setRegistrationForm({ ...registrationForm, [target.name]: target.value });
-  };
+    setRegistrationForm({ ...registrationForm, [target.name]: target.value })
+  }
 
   // It's only responsibility is handling the submit
   const submitHandler = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     // eslint-disable-next-line
     const { first_name, last_name, username, email, password, password_match } =
-      registrationForm;
-    post();
-  };
+      registrationForm
+    post()
+  }
 
   const post = () => {
     if (registrationForm.email === '' || registrationForm.password.length < 8) {
       alert(
         `Email must be filled in and password must be 8 characters or more.`
-      );
+      )
     } else if (
       registrationForm.email !== '' &&
       registrationForm.password === registrationForm.password_match
     ) {
-      alert(`You're Email and Password Matches!`);
+      alert(`You're Email and Password Matches!`)
       const {
         registration_id,
         username,
@@ -52,9 +53,9 @@ const RegistrationForm = () => {
         last_name,
         email,
         password,
-      } = registrationForm;
+      } = registrationForm
       axios
-        .post('http://localhost:5000/registration', {
+        .post(`${API}`, {
           data: {
             registration_id: registration_id,
             username: username,
@@ -65,17 +66,17 @@ const RegistrationForm = () => {
           },
         })
         .then((response) => {
-          console.log(`statusCode: ${response.statusCode}`);
-          console.log(response);
+          console.log(`statusCode: ${response.statusCode}`)
+          console.log(response)
         })
         .catch((error) => {
-          console.error(error);
-        });
-      history.push('/Login');
+          console.error(error)
+        })
+      history.push('/Login')
     } else {
-      alert(`Email and Password Do Not Match!`);
+      alert(`Email and Password Do Not Match!`)
     }
-  };
+  }
 
   return (
     <div
@@ -177,7 +178,7 @@ const RegistrationForm = () => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RegistrationForm;
+export default RegistrationForm
