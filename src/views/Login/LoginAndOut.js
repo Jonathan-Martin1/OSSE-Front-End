@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container'
 import axios from 'axios'
 
 export default function LoginOut({ loggedIn, setLoggedIn }) {
-  const API = process.env.REACT_APP_API_REGISTRATION
+  const API = process.env.REACT_APP_API_REGISTRATION_LOGIN
   if (loggedIn) {
     setLoggedIn(false)
   }
