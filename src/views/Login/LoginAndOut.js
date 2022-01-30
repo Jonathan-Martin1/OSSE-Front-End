@@ -4,10 +4,13 @@ import RegistrationForm from '../Register/RegistrationForm'
 import Overview from '../Overview/Overview'
 import Container from 'react-bootstrap/Container'
 import axios from 'axios'
+import jwt from 'jwt-simple'
+import uuid from 'react-uuid'
 // TODO: Fix the false with a valid username and password where any registered user can login
 
 export default function LoginOut({ loggedIn, setLoggedIn }) {
   const API = process.env.REACT_APP_API_REGISTRATION_LOGIN
+  const API2 = process.env.REACT_APP_API_USER
   if (loggedIn) {
     setLoggedIn(false)
   }
@@ -24,25 +27,48 @@ export default function LoginOut({ loggedIn, setLoggedIn }) {
   const handleSubmit = (event) => {
     event.preventDefault()
     if (formData.userName && formData.password !== '') {
-      // Checks input to not be empty
+      // Checks if the userName and password are filled in
       axios.get(`${API}`).then((response) => {
-        // calls API data assigns to response
+        // Gets the data from the database
         for (let i = 0; i < response.data.data.length; i++) {
-          // loops through data
+          // Loops through the data
           let comparisonData = response.data.data[i]
-          // Asigns a shorter varible for next checks
           if (
             comparisonData.username &&
             comparisonData.password === formData.userName &&
             formData.password
           ) {
-            // Validates that username and password match the data called from API
-            setLoggedIn(true)
-            history.push('/Overview') // if true, user is sent to game, state is set to true
+            // Checks if the username and password match
+            const { registration_id, username, email, password } =
+              comparisonData // Creates a new object with the data from the database
+            const secret = 'mysecret'
+            const token = jwt.encode(
+              { registration_id, username, email, password },
+              secret
+            ) // Creates a token
+            axios
+              .post(`${API2}`, {
+                data: {
+                  user_id: uuid(),
+                  user_name: username,
+                  login_token: token,
+                  registration_id: registration_id,
+                },
+              }) // Posts the token to the database
+              .then((response) => {
+                setLoggedIn(true)
+                history.push('/Overview')
+                console.log(`statusCode Login: ${response.statusCode}`)
+                console.log(response)
+              }) // Redirects the user to the overview page if the token is posted
+              .catch((error) => {
+                // If the token is not posted it will display an error
+                console.error(error)
+              })
           } else {
             setLoggedIn(false)
-            history.push('/Register') // if false, user is sent to registration
-          }
+            history.push('/Register')
+          } // Redirects the user to the register page if the username and password do not match
         }
       })
     }
