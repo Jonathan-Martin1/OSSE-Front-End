@@ -1,8 +1,8 @@
-import React from 'react';
-import Metal from './OverViewImages/Metal-Ore-Resized.jpg';
-import Crystal from './OverViewImages/crystal ore.jpg';
-import Deuterium from './OverViewImages/deuterium.jpg';
-import Energy from './OverViewImages/engery.jpg';
+import React from 'react'
+import Metal from './OverViewImages/Metal-Ore-Resized.jpg'
+import Crystal from './OverViewImages/crystal ore.jpg'
+import Deuterium from './OverViewImages/deuterium.jpg'
+import Energy from './OverViewImages/engery.jpg'
 
 export default function ResourceDisplay() {
   return (
@@ -38,5 +38,5 @@ export default function ResourceDisplay() {
         </div>
       </div>
     </div>
-  );
+  )
 }
